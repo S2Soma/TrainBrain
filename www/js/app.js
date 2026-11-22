@@ -392,7 +392,7 @@ class App {
         board.classList.toggle('board-pic', Boolean(question.picture));
         if (question.picture) return this.renderPictures(expr, question);
         expr.replaceChildren(...question.tokens.map((t) => (t === BLANK
-            ? h('span', { class: 'blank empty', id: 'answer-preview', text: BLANK })
+            ? h('span', { class: 'blank is-empty', id: 'answer-preview', text: BLANK })
             : h('span', { class: /^\d+$/.test(t) ? 'num' : 'sym', text: t }))));
         // Co chữ đến khi phép tính nằm gọn một dòng (4 số hạng vẫn vừa)
         let size = 64;
@@ -410,7 +410,7 @@ class App {
         const total = question.tokens.filter((t) => /^\d+$/.test(t)).reduce((n, t) => n + Number(t), 0);
         expr.style.setProperty('--pic', `${total <= 6 ? 46 : total <= 10 ? 38 : total <= 16 ? 32 : 26}px`);
         expr.replaceChildren(...question.tokens.map((t) => {
-            if (t === BLANK) return h('span', { class: 'blank empty', id: 'answer-preview', text: BLANK });
+            if (t === BLANK) return h('span', { class: 'blank is-empty', id: 'answer-preview', text: BLANK });
             if (!/^\d+$/.test(t)) return h('span', { class: 'sym', text: t });
             const n = Number(t);
             const group = h('span', { class: 'pic-group', 'aria-label': t, role: 'img' },
@@ -432,7 +432,7 @@ class App {
         const blank = $('answer-preview');
         if (!blank) return;
         blank.textContent = val || BLANK;
-        blank.classList.toggle('empty', val === '');
+        blank.classList.toggle('is-empty', val === '');
     }
 
     typeDigit(d) {
@@ -505,7 +505,7 @@ class App {
         // Chế độ 60 giây: hiện đáp án đúng rồi qua câu mới. Chế độ thường: cho làm lại.
         if (q.kind === 'attack') {
             $('answer-preview').textContent = answer;
-            $('answer-preview').classList.remove('empty');
+            $('answer-preview').classList.remove('is-empty');
             setTimeout(() => this.loadQuestion(q.index + 1), 650);
             return;
         }

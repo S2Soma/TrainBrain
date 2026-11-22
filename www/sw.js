@@ -1,5 +1,5 @@
 /* Service worker: ưu tiên mạng, rơi về cache khi offline. Chỉ xử lý tài nguyên cùng nguồn. */
-const CACHE = 'tinh-nhanh-v12';
+const CACHE = 'tinh-nhanh-v13';
 const ASSETS = [
   './', './index.html', './manifest.json',
   './css/styles.css',
@@ -40,6 +40,7 @@ const ASSETS = [
   './img/ui/backspace.png',
   './img/ui/bolt.png',
   './img/ui/brain.png',
+  './img/ui/broom.png',
   './img/ui/chart.png',
   './img/ui/check.png',
   './img/ui/cross.png',
@@ -75,8 +76,10 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== self.location.origin) return;
 
+  // Luôn hỏi lại máy chủ (bỏ qua cache HTTP) để không trộn JS cũ với CSS mới sau khi cập nhật
+  const req = e.request.mode === 'navigate' ? e.request : new Request(e.request, { cache: 'no-cache' });
   e.respondWith(
-    fetch(e.request)
+    fetch(req)
       .then((res) => {
         if (res.ok) {
           const copy = res.clone();

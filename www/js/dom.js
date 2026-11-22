@@ -18,12 +18,8 @@ export function h(tag, attrs = {}, ...children) {
     return el;
 }
 
-/** Icon Lucide dạng placeholder, gọi icons() sau khi gắn vào DOM */
-export const icon = (name) => h('i', { 'data-lucide': name });
-
-export function icons() {
-    if (window.lucide) window.lucide.createIcons();
-}
+/** Icon dạng hình 3D (Fluent Emoji, thư mục img/ui) */
+export const icon = (name, cls = 'ico') => h('img', { class: cls, src: `img/ui/${name}.png`, alt: '' });
 
 export function fmtDuration(sec) {
     const m = Math.floor(sec / 60);

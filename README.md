@@ -29,6 +29,6 @@ npx cap open android
 
 ## Ghi công
 
-- Hình minh hoạ và NPC: [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) (MIT), xem `www/img/CREDITS.txt`.
-- Icon: [Lucide](https://lucide.dev) (ISC). Hiệu ứng: [GSAP](https://gsap.com). Biểu đồ: [Chart.js](https://www.chartjs.org) (MIT).
+- Toàn bộ hình minh hoạ, icon giao diện và NPC Cú Tí: [Microsoft Fluent Emoji 3D](https://github.com/microsoft/fluentui-emoji) (MIT), xem `www/img/CREDITS.txt`.
+- Hiệu ứng: [GSAP](https://gsap.com). Biểu đồ: [Chart.js](https://www.chartjs.org) (MIT).
 - Font: [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque) (SIL OFL).

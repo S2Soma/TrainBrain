@@ -1,7 +1,7 @@
 /* Service worker: ưu tiên mạng, rơi về cache khi offline. Chỉ xử lý tài nguyên cùng nguồn. */
-const CACHE = 'tinh-nhanh-v11';
+const CACHE = 'tinh-nhanh-v12';
 const ASSETS = [
-  './', './index.html', './manifest.json', './icons/icon.svg',
+  './', './index.html', './manifest.json',
   './css/styles.css',
   './fonts/bricolage-latin.woff2', './fonts/bricolage-latin-ext.woff2', './fonts/bricolage-vietnamese.woff2',
   './js/app.js', './js/dom.js', './js/store.js', './js/sound.js', './js/math.js',
@@ -36,7 +36,27 @@ const ASSETS = [
   './img/obj/orange.png',
   './img/obj/star.png',
   './img/obj/strawberry.png',
-  './vendor/gsap-3.12.5.min.js', './vendor/lucide-0.469.0.min.js', './vendor/chart-4.4.7.umd.js',
+  './img/ui/abacus.png',
+  './img/ui/backspace.png',
+  './img/ui/bolt.png',
+  './img/ui/brain.png',
+  './img/ui/chart.png',
+  './img/ui/check.png',
+  './img/ui/cross.png',
+  './img/ui/crown.png',
+  './img/ui/fire.png',
+  './img/ui/gear.png',
+  './img/ui/help.png',
+  './img/ui/house.png',
+  './img/ui/keyboard.png',
+  './img/ui/mute.png',
+  './img/ui/numbers.png',
+  './img/ui/shuffle.png',
+  './img/ui/skip.png',
+  './img/ui/speaker.png',
+  './img/ui/stopwatch.png',
+  './img/ui/trash.png',
+  './vendor/gsap-3.12.5.min.js', './vendor/chart-4.4.7.umd.js',
 ];
 
 self.addEventListener('install', (e) => {

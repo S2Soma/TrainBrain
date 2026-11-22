@@ -1,4 +1,4 @@
-import { $, $$, h, icon, icons, fmtDuration, fmtClock } from './dom.js';
+import { $, $$, h, icon, fmtDuration, fmtClock } from './dom.js';
 import { Settings, History } from './store.js';
 import { sound } from './sound.js';
 import { generateQuestion, generatePictureQuestion, OP_NAMES, LEVEL_NAMES, QTYPE_NAMES, BLANK } from './math.js';
@@ -60,17 +60,15 @@ const fx = {
         gsap.to(o, { v: to, duration: 0.8, ease: 'power2.out', onUpdate: () => (el.textContent = `${Math.round(o.v)}${suffix}`) });
     },
     burst() {
-        const glyphs = ['+', '−', '×', '÷', '=', '7', '3', '9', '%'];
-        const colors = ['#4f6bed', '#f08a4b', '#2f9e74', '#e0a100'];
-        for (let i = 0; i < 30; i++) {
-            const el = h('span', { class: 'burst', text: glyphs[i % glyphs.length] });
-            el.style.color = colors[i % colors.length];
+        const tiles = ['k1', 'k2', 'k3', 'k5', 'k7', 'k9', 'plus', 'minus', 'multiply', 'equals'];
+        for (let i = 0; i < 24; i++) {
+            const el = h('img', { class: 'burst', src: `img/bg/${tiles[i % tiles.length]}.png`, alt: '' });
             document.body.append(el);
             const a = Math.random() * Math.PI * 2;
-            const d = gsap.utils.random(100, 280);
-            gsap.fromTo(el, { x: window.innerWidth / 2, y: window.innerHeight / 3, scale: 0.5, opacity: 1 }, {
+            const d = gsap.utils.random(100, 260);
+            gsap.fromTo(el, { x: window.innerWidth / 2 - 20, y: window.innerHeight / 3, scale: 0.4, opacity: 1 }, {
                 x: `+=${Math.cos(a) * d}`, y: `+=${Math.sin(a) * d + 140}`, rotation: gsap.utils.random(-220, 220),
-                scale: gsap.utils.random(1, 1.8), opacity: 0, duration: gsap.utils.random(1, 1.7), ease: 'power2.out',
+                scale: gsap.utils.random(0.8, 1.3), opacity: 0, duration: gsap.utils.random(1, 1.6), ease: 'power2.out',
                 onComplete: () => el.remove(),
             });
         }
@@ -80,7 +78,7 @@ const fx = {
         box.classList.remove('hidden');
         const tl = gsap.timeline();
         ['3', '2', '1'].forEach((n) => {
-            tl.call(() => { box.textContent = n; sound.click(); })
+            tl.call(() => { box.replaceChildren(h('img', { src: `img/bg/k${n}.png`, alt: n })); sound.click(); })
                 .fromTo(box, { scale: 1.8, opacity: 0, rotation: -10 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.3, ease: 'back.out(2)' })
                 .to(box, { opacity: 0, duration: 0.2, delay: 0.38 });
         });
@@ -102,7 +100,6 @@ class App {
         this.syncSettingsUI();
         this.setMode('math');
         this.renderHome();
-        icons();
         fx.enter($('screen-home'));
         if (Tour.shouldAutoStart()) setTimeout(() => Tour.start(), 700);
     }
@@ -274,8 +271,7 @@ class App {
         this.mark('pic-segment', 'pic', s.defaultPic);
         this.mark('set-op-grid', 'op', s.defaultOp);
         $('set-sound').checked = s.soundEnabled;
-        $('sound-btn').replaceChildren(icon(sound.muted ? 'volume-x' : 'volume-2'));
-        icons();
+        $('sound-btn').replaceChildren(icon(sound.muted ? 'mute' : 'speaker'));
     }
 
     /* Trang chủ */
@@ -301,7 +297,7 @@ class App {
         const streak = History.streak();
         $('streak-days').textContent = streak.count;
         $('streak-week').replaceChildren(...streak.week.map((d) =>
-            h('span', { class: `day${d.done ? ' done' : ''}${d.today ? ' today' : ''}` }, h('i'), d.label)));
+            h('span', { class: `day${d.done ? ' done' : ''}${d.today ? ' today' : ''}` }, d.done ? icon('fire', 'day-dot') : h('i', { class: 'day-dot' }), d.label)));
 
         const { defaultLevel: level, defaultQType: qtype, defaultTerms: terms, defaultPic: pic } = this.settings;
         $('attack-best-val').textContent = History.best('time-attack', { level, qtype, terms, pic });
@@ -577,8 +573,7 @@ class App {
 
         $('res-list').replaceChildren(...q.attempts.map((a) => h('div', { class: `item ${a.isCorrect ? 'ok' : 'bad'}` },
             h('div', {}, a.question, h('small', { text: `${a.timeSpentSec}s` })),
-            h('span', { class: 'end' }, a.userAnswer, icon(a.isCorrect ? 'check' : 'x')))));
-        icons();
+            h('span', { class: 'end' }, a.userAnswer, icon(a.isCorrect ? 'check' : 'cross')))));
         this.celebrate(isRecord || accuracy >= 80);
     }
 
@@ -660,9 +655,8 @@ class App {
         $('wm-owl').textContent = owlSays(accuracy, isRecord);
         $('wm-compare').replaceChildren(...this.memory.words.map((w, i) => {
             const ok = matched.has(i);
-            return h('div', { class: `item ${ok ? 'ok' : 'bad'}` }, w, h('span', { class: 'end' }, icon(ok ? 'check' : 'x')));
+            return h('div', { class: `item ${ok ? 'ok' : 'bad'}` }, w, h('span', { class: 'end' }, icon(ok ? 'check' : 'cross')));
         }));
-        icons();
         fx.enter($('wm-result'));
         this.celebrate(isRecord || accuracy >= 80);
     }

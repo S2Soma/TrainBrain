@@ -1,4 +1,4 @@
-Hình minh hoạ (thư mục img/obj, img/bg, img/npc) lấy từ bộ Fluent Emoji 3D của Microsoft:
+Hình minh hoạ và icon giao diện (thư mục img/obj, img/bg, img/npc, img/ui) lấy từ bộ Fluent Emoji 3D của Microsoft:
 https://github.com/microsoft/fluentui-emoji
 Đã thu nhỏ kích thước, không chỉnh sửa nội dung.
 

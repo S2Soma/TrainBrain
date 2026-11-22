@@ -1,12 +1,12 @@
 {
-  "name": "Tính Nhanh Luyện Não",
+  "name": "Tính Nhanh",
   "short_name": "Tính Nhanh",
   "description": "Luyện tính nhẩm nhanh và kiểm tra trí nhớ từ vựng mỗi ngày.",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#070b1a",
-  "theme_color": "#070b1a",
+  "background_color": "#eef1f6",
+  "theme_color": "#eef1f6",
   "icons": [
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]

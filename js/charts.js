@@ -2,8 +2,9 @@
 import { History } from './store.js';
 
 const charts = {};
-const TICK = { color: '#9aa4cf', font: { size: 10 } };
-const GRID = { color: 'rgba(255,255,255,0.06)' };
+const FONT = { family: 'Bricolage Grotesque', size: 11, weight: '600' };
+const TICK = { color: '#667085', font: FONT };
+const GRID = { color: 'rgba(29,36,51,0.07)' };
 
 function last7Days() {
     const days = [];
@@ -16,7 +17,7 @@ function last7Days() {
 }
 
 function dataset(label, data, color, extra = {}) {
-    return { label, data, borderColor: color, backgroundColor: `${color}22`, pointBackgroundColor: color, borderWidth: 3, pointRadius: 4, tension: 0.35, spanGaps: true, ...extra };
+    return { label, data, borderColor: color, backgroundColor: `${color}22`, pointBackgroundColor: color, borderWidth: 3, pointRadius: 5, pointBorderColor: '#ffffff', pointBorderWidth: 2, tension: 0.35, spanGaps: true, ...extra };
 }
 
 function draw(id, labels, datasets, yOptions) {
@@ -29,7 +30,7 @@ function draw(id, labels, datasets, yOptions) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#cbd5f5', boxWidth: 12, font: { size: 10 } } } },
+            plugins: { legend: { display: false } },
             scales: { x: { grid: GRID, ticks: TICK }, y: { grid: GRID, ticks: TICK, ...yOptions } },
         },
     });
@@ -50,18 +51,22 @@ export function renderCharts() {
     const days = last7Days();
     const labels = days.map((d) => d.label);
     const all = History.all();
-    const math = all.filter((r) => r.opType !== 'word-memory');
+    const math = all.filter((r) => !['word-memory', 'time-attack'].includes(r.opType) && !r.review && !r.pic && (r.level ?? 'easy') === 'easy' && (r.qtype ?? 'result') === 'result' && (r.terms ?? 2) === 2);
+    const attack = all.filter((r) => r.opType === 'time-attack');
     const memory = all.filter((r) => r.opType === 'word-memory');
 
     const times = bestPerDay(math, days, (r) => r.totalTimeSeconds || 0, (a, b) => a < b);
     const line = (label, value, color) => dataset(label, Array(7).fill(value), color, { borderDash: [6, 6], pointRadius: 0, borderWidth: 2, backgroundColor: 'transparent' });
     draw('math-chart', labels, [
-        dataset('Tốt nhất (giây)', times, '#22d3ee', { fill: true }),
-        line('9s cần cải thiện', 9, '#fb7185'),
-        line('8s tốt', 8, '#fbbf24'),
-        line('7s xuất sắc', 7, '#34d399'),
+        dataset('Tốt nhất', times, '#4f6bed', { fill: true }),
+        line('9s', 9, '#e5484d'),
+        line('8s', 8, '#f08a4b'),
+        line('7s', 7, '#2f9e74'),
     ], {});
 
     const scores = bestPerDay(memory, days, (r) => r.correctCount || 0, (a, b) => a > b);
-    draw('memory-chart', labels, [dataset('Từ nhớ đúng', scores, '#a78bfa', { fill: true })], { min: 0, max: 20 });
+    draw('memory-chart', labels, [dataset('Từ nhớ đúng', scores, '#2f9e74', { fill: true })], { min: 0, max: 20, ticks: { ...TICK, precision: 0 } });
+
+    const attackScores = bestPerDay(attack, days, (r) => r.correctCount || 0, (a, b) => a > b);
+    draw('attack-chart', labels, [dataset('Câu đúng trong 60 giây', attackScores, '#f08a4b', { fill: true })], { min: 0, ticks: { ...TICK, precision: 0 } });
 }

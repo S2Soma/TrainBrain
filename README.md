@@ -1,9 +1,16 @@
 # Tính Nhanh Luyện Não
 
-Ứng dụng luyện tính nhẩm 1 chữ số và kiểm tra trí nhớ 20 từ. Chạy hoàn toàn offline, không thu thập dữ liệu; lịch sử lưu trong `localStorage` của trình duyệt.
+Ứng dụng luyện tính nhẩm và trí nhớ cho cả trẻ em lẫn người lớn. Chạy hoàn toàn offline, không thu thập dữ liệu; lịch sử lưu trong `localStorage` của trình duyệt.
 
-- Giao diện chủ đề toán học, icon [Lucide](https://lucide.dev), hiệu ứng [GSAP](https://gsap.com), biểu đồ Chart.js (đều đặt sẵn trong `www/vendor/`).
-- Mã nguồn web nằm trong `www/` (HTML, CSS, JS module, không cần build).
+Bản chạy trên web: https://s2soma.github.io/TrainBrain/
+
+## Tính năng
+
+- **Tính nhẩm** theo số câu (10 / 20 / 90), **Tốc độ** (đúng nhiều nhất trong 60 giây) và **Nhớ từ** (ghi nhớ 20 từ trong 2 phút).
+- **Độ khó** Dễ / Vừa / Khó, **dạng bài** tìm kết quả (`3 + 5 = ?`) hoặc tìm số thiếu (`3 + ? = 8`), **2–4 số hạng** (nhân trước, cộng trừ sau, không ra số âm).
+- **Hình ảnh** cho bé mới học: đếm táo, gà con, bóng bay… thay cho số.
+- **Cú Tí** hướng dẫn sử dụng lần đầu (bấm nút dấu hỏi để xem lại) và nhận xét sau mỗi bài.
+- Chuỗi ngày luyện tập, kỷ lục cá nhân, luyện lại câu sai, biểu đồ 7 ngày.
 
 ## Chạy thử
 
@@ -19,3 +26,9 @@ npm install
 npx cap sync
 npx cap open android
 ```
+
+## Ghi công
+
+- Hình minh hoạ và NPC: [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) (MIT), xem `www/img/CREDITS.txt`.
+- Icon: [Lucide](https://lucide.dev) (ISC). Hiệu ứng: [GSAP](https://gsap.com). Biểu đồ: [Chart.js](https://www.chartjs.org) (MIT).
+- Font: [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque) (SIL OFL).

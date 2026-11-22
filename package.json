@@ -1,0 +1,17 @@
+{
+  "name": "tinh-nhanh-luyen-nao",
+  "version": "1.0.0",
+  "description": "Ứng dụng luyện tính nhẩm nhanh và kiểm tra trí nhớ từ vựng.",
+  "main": "main_desktop.py",
+  "scripts": {
+    "start:desktop": "python3 main_desktop.py",
+    "cap:sync": "npx cap sync",
+    "cap:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  },
+  "private": true
+}

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta name="description" content="Luyện tính nhẩm nhanh và kiểm tra trí nhớ từ vựng mỗi ngày.">
+    <meta name="theme-color" content="#070b1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <title>Tính Nhanh Luyện Não</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Nền chữ số & ký hiệu toán học (GSAP) -->
+    <div class="math-bg" id="math-bg" aria-hidden="true"></div>
+
+    <div class="app" id="app">
+        <header class="app-header">
+            <button class="brand" id="brand-btn" type="button" aria-label="Về trang chủ">
+                <span class="brand-mark"><i data-lucide="sigma"></i></span>
+                <span class="brand-title">Tính Nhanh</span>
+            </button>
+            <div class="header-actions">
+                <button class="icon-btn" id="sound-btn" type="button" aria-label="Bật/tắt âm thanh">
+                    <i data-lucide="volume-2" id="sound-on"></i>
+                    <i data-lucide="volume-x" id="sound-off" class="hidden"></i>
+                </button>
+                <button class="icon-btn" id="stats-btn" type="button" aria-label="Thống kê">
+                    <i data-lucide="chart-column"></i>
+                </button>
+                <button class="icon-btn" id="settings-btn" type="button" aria-label="Cài đặt">
+                    <i data-lucide="settings"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- 1. TRANG CHỦ -->
+            <section class="screen active" id="screen-home">
+                <div class="hero panel">
+                    <span class="chip"><i data-lucide="brain-circuit"></i> Luyện não mỗi ngày</span>
+                    <h1 class="hero-title">Sẵn sàng <span class="grad">thử thách</span> chưa?</h1>
+                    <p class="muted">Tính nhẩm thật nhanh, ghi nhớ thật chắc và xem mình tiến bộ mỗi ngày.</p>
+                </div>
+
+                <h2 class="section-title"><i data-lucide="gamepad-2"></i> Chọn chế độ</h2>
+                <div class="mode-grid">
+                    <button type="button" class="mode-card active" data-mode="math">
+                        <span class="mode-icon"><i data-lucide="calculator"></i></span>
+                        <span class="mode-name">Tính Nhanh</span>
+                        <span class="mode-desc">Cộng, trừ, nhân 1 chữ số. Đua với đồng hồ!</span>
+                        <span class="mode-tags"><span class="tag"><i data-lucide="zap"></i> Phản xạ</span></span>
+                    </button>
+                    <button type="button" class="mode-card" data-mode="memory">
+                        <span class="mode-icon"><i data-lucide="brain"></i></span>
+                        <span class="mode-name">Nhớ Từ</span>
+                        <span class="mode-desc">Ghi nhớ 20 từ trong 2 phút rồi gõ lại.</span>
+                        <span class="mode-tags"><span class="tag"><i data-lucide="timer"></i> 2 phút</span></span>
+                    </button>
+                </div>
+
+                <div class="panel" id="math-config">
+                    <h3 class="panel-title"><i data-lucide="sliders-horizontal"></i> Số lượng câu hỏi</h3>
+                    <div class="segment" id="qcount-segment">
+                        <button type="button" class="segment-btn" data-count="10">10 câu</button>
+                        <button type="button" class="segment-btn" data-count="20">20 câu</button>
+                        <button type="button" class="segment-btn" data-count="90">90 câu</button>
+                    </div>
+                </div>
+
+                <div class="panel hidden" id="memory-config">
+                    <h3 class="panel-title"><i data-lucide="book-open"></i> Kiểm tra trí nhớ</h3>
+                    <ul class="info-list">
+                        <li><i data-lucide="list-checks"></i><span><strong>20 từ vựng</strong> chọn ngẫu nhiên từ kho từ.</span></li>
+                        <li><i data-lucide="timer"></i><span><strong>2 phút ghi nhớ</strong>, sau đó gõ lại theo trí nhớ (không cần đúng thứ tự).</span></li>
+                    </ul>
+                </div>
+
+                <button id="start-btn" type="button" class="btn btn-primary btn-xl btn-block">
+                    <i data-lucide="play"></i> <span id="start-btn-text">Bắt đầu luyện toán</span>
+                </button>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3 class="panel-title"><i data-lucide="target"></i> Hôm nay</h3>
+                        <button id="view-stats-btn" type="button" class="link-btn">Xem tiến trình <i data-lucide="chevron-right"></i></button>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat"><i data-lucide="flame"></i><b id="st-streak">0</b><span>Chuỗi đúng tốt nhất</span></div>
+                        <div class="stat"><i data-lucide="star"></i><b id="st-xp">0</b><span>XP hôm nay</span></div>
+                        <div class="stat"><i data-lucide="trophy"></i><b id="st-best">--</b><span>Điểm cao nhất</span></div>
+                    </div>
+                    <div class="goal">
+                        <div class="goal-head"><span>Mục tiêu ngày</span><span id="goal-text">0/30 câu</span></div>
+                        <div class="bar"><div class="bar-fill" id="goal-fill"></div></div>
+                    </div>
+                    <div class="stat-row stat-row-plain">
+                        <div class="stat"><b id="qs-games">0</b><span>Phiên tập</span></div>
+                        <div class="stat"><b id="qs-acc">0%</b><span>Chính xác TB</span></div>
+                        <div class="stat"><b id="qs-speed">0s</b><span>Tốc độ TB</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. LÀM BÀI TOÁN -->
+            <section class="screen" id="screen-quiz">
+                <div class="topbar panel">
+                    <button type="button" class="btn btn-ghost btn-sm" data-back><i data-lucide="arrow-left"></i> Thoát</button>
+                    <span class="chip" id="quiz-progress-text">1/10</span>
+                    <span class="chip chip-warm hidden" id="streak-badge"><i data-lucide="flame"></i> <span id="streak-count">0</span></span>
+                    <span class="chip chip-cool"><i data-lucide="timer"></i> <span id="quiz-timer">00:00</span></span>
+                </div>
+                <div class="bar"><div class="bar-fill" id="quiz-progress-fill"></div></div>
+
+                <div class="question-card panel" id="question-card">
+                    <div class="op-tag" id="op-tag">Phép Cộng</div>
+                    <div class="math-expr" id="math-expr">7 + 8 = ?</div>
+                    <div class="answer-preview" id="answer-preview"></div>
+                    <div class="feedback hidden" id="quiz-feedback"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="segment">
+                        <button type="button" class="segment-btn active" id="mode-numpad-btn"><i data-lucide="grid-3x3"></i> Bàn phím</button>
+                        <button type="button" class="segment-btn" id="mode-mcq-btn"><i data-lucide="list"></i> Trắc nghiệm</button>
+                    </div>
+
+                    <div class="numpad" id="numpad-view">
+                        <button type="button" class="key" data-val="1">1</button>
+                        <button type="button" class="key" data-val="2">2</button>
+                        <button type="button" class="key" data-val="3">3</button>
+                        <button type="button" class="key" data-val="4">4</button>
+                        <button type="button" class="key" data-val="5">5</button>
+                        <button type="button" class="key" data-val="6">6</button>
+                        <button type="button" class="key" data-val="7">7</button>
+                        <button type="button" class="key" data-val="8">8</button>
+                        <button type="button" class="key" data-val="9">9</button>
+                        <button type="button" class="key key-action" id="key-clear" aria-label="Xóa hết"><i data-lucide="eraser"></i></button>
+                        <button type="button" class="key" data-val="0">0</button>
+                        <button type="button" class="key key-action" id="key-back" aria-label="Xóa một số"><i data-lucide="delete"></i></button>
+                    </div>
+
+                    <div class="mcq hidden" id="mcq-view">
+                        <button type="button" class="key mcq-btn"></button>
+                        <button type="button" class="key mcq-btn"></button>
+                        <button type="button" class="key mcq-btn"></button>
+                        <button type="button" class="key mcq-btn"></button>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="button" id="skip-btn" class="btn btn-ghost"><i data-lucide="skip-forward"></i> Bỏ qua</button>
+                    <button type="button" id="submit-btn" class="btn btn-primary grow"><i data-lucide="check"></i> Gửi kết quả</button>
+                </div>
+            </section>
+
+            <!-- 3. NHỚ TỪ -->
+            <section class="screen" id="screen-memory">
+                <div class="topbar panel">
+                    <button type="button" class="btn btn-ghost btn-sm" data-back><i data-lucide="arrow-left"></i> Thoát</button>
+                    <span class="chip" id="wm-status">Ghi nhớ 20 từ</span>
+                    <span class="chip chip-cool" id="wm-timer-chip"><i data-lucide="timer"></i> <span id="wm-timer">2:00</span></span>
+                </div>
+
+                <div id="wm-memorize">
+                    <div class="panel"><p>Ghi nhớ <strong>20 từ</strong> dưới đây trong <strong>2 phút</strong>.</p></div>
+                    <div class="words-grid" id="wm-words"></div>
+                    <button type="button" id="wm-early-btn" class="btn btn-primary btn-lg btn-block"><i data-lucide="fast-forward"></i> Đã nhớ xong</button>
+                </div>
+
+                <div id="wm-recall" class="hidden">
+                    <div class="panel"><p>Danh sách đã bị ẩn. Gõ lại những từ bạn nhớ (không cần đúng thứ tự).</p></div>
+                    <div class="recall-grid" id="wm-recall-grid"></div>
+                    <button type="button" id="wm-finish-btn" class="btn btn-primary btn-lg btn-block"><i data-lucide="check-check"></i> Chấm điểm</button>
+                </div>
+
+                <div id="wm-result" class="hidden">
+                    <div class="result-head">
+                        <div class="trophy"><i data-lucide="trophy"></i></div>
+                        <h1>Kết quả Nhớ Từ</h1>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-card highlight"><span>Từ nhớ đúng</span><b id="wm-res-count">0/20</b><small id="wm-res-acc">0%</small></div>
+                        <div class="result-card"><span>Thời gian</span><b id="wm-res-time">0s</b><small>Từ lúc bắt đầu</small></div>
+                    </div>
+                    <div class="panel">
+                        <h3 class="panel-title">Bảng đối chiếu</h3>
+                        <div class="list" id="wm-compare"></div>
+                    </div>
+                    <div class="actions">
+                        <button type="button" id="wm-retry-btn" class="btn btn-primary grow"><i data-lucide="rotate-ccw"></i> Thử lại</button>
+                        <button type="button" id="wm-home-btn" class="btn btn-ghost"><i data-lucide="house"></i> Trang chủ</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. KẾT QUẢ TÍNH NHANH -->
+            <section class="screen" id="screen-result">
+                <div class="result-head">
+                    <div class="trophy"><i data-lucide="trophy"></i></div>
+                    <h1>Hoàn thành!</h1>
+                    <p class="muted" id="result-eval">Kết quả bài tập của bạn.</p>
+                </div>
+                <div class="result-grid">
+                    <div class="result-card highlight"><span>Số câu đúng</span><b id="res-correct">0/0</b><small id="res-acc">0%</small></div>
+                    <div class="result-card"><span>Tổng thời gian</span><b id="res-time">0s</b><small>Cả phiên tập</small></div>
+                    <div class="result-card"><span>Tốc độ TB</span><b id="res-speed">0s</b><small>Giây mỗi câu</small></div>
+                    <div class="result-card"><span>Chuỗi đúng</span><b id="res-streak">0</b><small>Liên tiếp tốt nhất</small></div>
+                </div>
+                <div class="panel">
+                    <h3 class="panel-title">Chi tiết từng câu</h3>
+                    <div class="list" id="res-list"></div>
+                </div>
+                <div class="actions">
+                    <button type="button" id="retry-btn" class="btn btn-primary grow"><i data-lucide="rotate-ccw"></i> Luyện lại</button>
+                    <button type="button" id="result-home-btn" class="btn btn-ghost"><i data-lucide="house"></i> Trang chủ</button>
+                </div>
+            </section>
+
+            <!-- 5. CÀI ĐẶT -->
+            <section class="screen" id="screen-settings">
+                <div class="topbar panel">
+                    <button type="button" class="btn btn-ghost btn-sm" data-back><i data-lucide="arrow-left"></i> Quay lại</button>
+                    <h1 class="topbar-title">Cài đặt</h1>
+                </div>
+
+                <div class="panel">
+                    <h3 class="panel-title">Phép toán mặc định</h3>
+                    <div class="op-grid" id="set-op-grid">
+                        <button type="button" class="segment-btn" data-op="mix"><i data-lucide="shuffle"></i> Hỗn hợp</button>
+                        <button type="button" class="segment-btn" data-op="add"><i data-lucide="plus"></i> Cộng</button>
+                        <button type="button" class="segment-btn" data-op="sub"><i data-lucide="minus"></i> Trừ</button>
+                        <button type="button" class="segment-btn" data-op="mul"><i data-lucide="x"></i> Nhân</button>
+                    </div>
+
+                    <h3 class="panel-title mt">Số câu mặc định</h3>
+                    <div class="segment" id="set-count-segment">
+                        <button type="button" class="segment-btn" data-count="10">10 câu</button>
+                        <button type="button" class="segment-btn" data-count="20">20 câu</button>
+                        <button type="button" class="segment-btn" data-count="90">90 câu</button>
+                    </div>
+
+                    <div class="toggle-row mt">
+                        <div>
+                            <strong>Hiệu ứng âm thanh</strong>
+                            <p class="muted">Phát tiếng khi trả lời và nộp bài</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="set-sound">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-primary grow" id="save-settings-btn"><i data-lucide="save"></i> Lưu cài đặt</button>
+                    <button type="button" class="btn btn-ghost" id="reset-settings-btn"><i data-lucide="rotate-ccw"></i> Mặc định</button>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav">
+            <button type="button" class="bnav active" data-nav="home"><i data-lucide="house"></i><span>Chơi</span></button>
+            <button type="button" class="bnav" data-nav="stats"><i data-lucide="trophy"></i><span>Thành tích</span></button>
+            <button type="button" class="bnav" data-nav="settings"><i data-lucide="settings"></i><span>Cài đặt</span></button>
+        </nav>
+
+        <div class="toast hidden" id="toast" role="status"></div>
+    </div>
+
+    <!-- Hộp thoại sẵn sàng -->
+    <div class="modal hidden" id="ready-modal">
+        <div class="modal-card center">
+            <div class="modal-icon"><i data-lucide="timer"></i></div>
+            <h2>Bạn đã sẵn sàng chưa?</h2>
+            <p class="muted">Bài tập gồm các phép tính 1 chữ số. Đồng hồ chạy ngay khi bạn bấm Sẵn sàng.</p>
+            <div class="actions">
+                <button type="button" id="ready-start-btn" class="btn btn-primary grow"><i data-lucide="rocket"></i> Sẵn sàng</button>
+                <button type="button" id="ready-cancel-btn" class="btn btn-ghost">Quay lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hộp thoại xác nhận chung -->
+    <div class="modal hidden" id="confirm-modal">
+        <div class="modal-card center">
+            <div class="modal-icon warn"><i data-lucide="triangle-alert"></i></div>
+            <p id="confirm-text"></p>
+            <div class="actions">
+                <button type="button" id="confirm-ok" class="btn btn-primary grow">Đồng ý</button>
+                <button type="button" id="confirm-cancel" class="btn btn-ghost">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thống kê -->
+    <div class="modal hidden" id="stats-modal">
+        <div class="modal-card wide">
+            <div class="modal-head">
+                <h2><i data-lucide="chart-column"></i> Tiến độ 7 ngày</h2>
+                <button type="button" class="icon-btn" id="stats-close" aria-label="Đóng"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="panel">
+                    <h3 class="panel-title"><i data-lucide="zap"></i> Thời gian tính toán tốt nhất (giây)</h3>
+                    <div class="chart-wrap"><canvas id="math-chart"></canvas></div>
+                </div>
+                <div class="panel">
+                    <h3 class="panel-title"><i data-lucide="brain"></i> Từ nhớ đúng (trên 20)</h3>
+                    <div class="chart-wrap"><canvas id="memory-chart"></canvas></div>
+                </div>
+                <h3 class="section-title">Lịch sử gần đây</h3>
+                <div class="list" id="history-list"></div>
+            </div>
+            <div class="actions">
+                <button type="button" id="clear-history-btn" class="btn btn-danger btn-sm"><i data-lucide="trash-2"></i> Xóa lịch sử</button>
+                <button type="button" id="stats-close-2" class="btn btn-ghost btn-sm grow">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="vendor/gsap-3.12.5.min.js"></script>
+    <script src="vendor/lucide-0.469.0.min.js"></script>
+    <script src="vendor/chart-4.4.7.umd.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
